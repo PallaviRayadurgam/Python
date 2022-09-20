@@ -1,3 +1,7 @@
+%md This notebook moves files from SFTP to Azure Blob Storage to Blob Storage by taking user input to go back in dates and pull all the files based on Last modified date on server
+
+### can be used to download either to local or Blob or S3 if mounted
+
 import pysftp
 import json 
 import warnings
@@ -32,9 +36,16 @@ sftp = pysftp.Connection(host=hostname, username=Username, password=Password, cn
 
 date_limit = past_date(days_back)
 
+sftp.cwd(remote_dir)
+directory_structure = sftp.listdir_attr()
+
+###list files on server 
+def list_files():
+  for attr in directory_structure:
+      print(attr.filename)
+  
+
 def download_files()
-  sftp.cwd(remote_dir)
-  directory_structure = sftp.listdir_attr()
   for attr in directory_structure:
       last_modified = attr.st_mtime
       last_modified_date = datetime.fromtimestamp(last_modified).date()
@@ -46,5 +57,9 @@ def download_files()
           print(f"Downloaded {attr.filename} to Blob Storage")
         except Exception as e:
           print(e)
-  sftp.close()
+          
+list_files()
+download_files()
+sftp.close()
+
 
